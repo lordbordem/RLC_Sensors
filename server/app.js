@@ -17,8 +17,8 @@ var async = require('async');
 var locationList = ['']
 
 
-var peopleCounterLocationList = ['PCB101-LevelB1CenterPCLabs1', 'PCB102-LevelB1WesternPCLabs1', 'PC0005-WattleStreetWest1,' 'PC0006-WattleStreetWest2', 'PC0007-WattleStB10Entrance', 'PC0008-BroadwayWest2Stairs', 'PC0009-BroadwayWest1', 'PC0111-CafeWest', 'PC0112-StairsToLevel2', 'PC0113-PennyLaneExit', 'PC0214-BroadwayEastEntrance', 'PC0215-DataArena', 'PC0216-JonesStEntrance', 'PC0420-Classroom400', 'PC0522-Level5StairsDown', 'PC0523-Classroom200', 'PC0825-CHTArea', 'PC0926-CassArea', 'PC0927-Level9StairsUp', 'PC0928-Level9StairsDown', 'PC0929-StaffCommonRoom', 'PC1030-Level10BridgeEast', 'PC1131-Level11BridgeEast', 'PC1132-SchoolOfCivil', 'PC1133-Level11StairsUp'];
-
+var peopleCounterLocationList = ['PCB101-LevelB1CenterPCLabs1', 'PCB102-LevelB1WesternPCLabs1', 'PC0005-WattleStreetWest1', 'PC0006-WattleStreetWest2', 'PC0007-WattleStB10Entrance', 'PC0008-BroadwayWest2Stairs', 'PC0009-BroadwayWest1', 'PC0111-CafeWest', 'PC0112-StairsToLevel2', 'PC0113-PennyLaneExit', 'PC0214-BroadwayEastEntrance', 'PC0215-DataArena', 'PC0216-JonesStEntrance', 'PC0420-Classroom400', 'PC0522-Level5StairsDown', 'PC0523-Classroom200', 'PC0825-CHTArea', 'PC0926-CassArea', 'PC0927-Level9StairsUp', 'PC0928-Level9StairsDown', 'PC0929-StaffCommonRoom', 'PC1030-Level10BridgeEast', 'PC1131-Level11BridgeEast', 'PC1132-SchoolOfCivil', 'PC1133-Level11StairsUp'];
+/*
 var dbPeopleCounterList =
   {
     "PCB101-LevelB1CenterPCLabs1": {"Out": },
@@ -46,9 +46,8 @@ var dbPeopleCounterList =
     "PC1131-Level11BridgeEast": {},
     "PC1132-SchoolOfCivil": {},
     "PC1133-Level11StairsUp": {}
-
   };
-
+*/
 var underscore = require("underscore.string");
 var math = require('mathjs');
 
@@ -141,7 +140,6 @@ var dbRooms =
     "E1-05300": {"capacity": 22},
     "E1-11302": {"capacity": 15}
 };
->>>>>>> origin/master
 
 var dbLevels = {};
 
@@ -157,32 +155,31 @@ var getWaspmotes = function(waspmoteList, waspmote_list){
 	// console.log(fromDate);
 
 
-	//For every room in the predefined array, retrieve the json from the specfic url
+	//For every waspmote in the predefined array, retrieve the json from the specfic url
 	for(let waspmote of waspmote_list){
 
 		var request = require('request');
 		var url = "https://eif-research.feit.uts.edu.au/api/json/?rFromDate="+ fromDate +"&rToDate="+ toDate +"&rFamily=wasp&rSensor=" + waspmote + "&rSubSensor=CO2"
-		
+		console.log("the url is.." + url);
 
-		console.log(waspmote);
+		//console.log(waspmote);
 		//Line added to deal with the authorisation request from the uts api. 
 		//(note: it is not the best practice and not very secure, but till an alternative is found, this is the solution)
 		process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 		//Debugging
 		console.log("Sending request");
-		console.log(waspmote);
 		request(url , function (error, response, body) {
 			//Debugging
 			console.log("got response");
-
+			console.log(body);
 			//Alternative fix to the authorisation problem, still in progress (slows down everything)
 			//require('ssl-root-cas').inject();
 
 			if (!error && response.statusCode == 200) {
 			 	//Gets the body response from the request call and formats it to json
 			 	//Adds information to dbRooms
-				addInfoTodbRooms(body, room);
+				addInfoTodbWaspmote(body, waspmote);
 	 
 			}else{
 			  	console.log(error);
@@ -190,6 +187,21 @@ var getWaspmotes = function(waspmoteList, waspmote_list){
 			}
 		})
 	}
+}
+
+
+
+//Adds information to dbRooms, and also calls populate levels
+//The function"Populate levels" is being called in here to
+//avoid js asynchronus execution
+var addInfoTodbWaspmote = function(body, waspmote){
+	var jsonBody = JSON.parse(body);
+	for(var attributename in jsonBody){
+
+    	dbWaspmote[waspmote]["CO2"] = jsonBody[attributename][1];
+		console.log(dbWaspmote[waspmote]["CO2"]);
+	}
+
 }
 
 
@@ -372,7 +384,6 @@ app.get('/data', function (req, res) {
 app.listen(3000, function () {
   console.log('Applistening on port 3000!')
 })
-<<<<<<< HEAD
 
 //Sockets (Real Time Updating)
 
@@ -625,6 +636,3 @@ io.on('connection', function (socket) {
 
 
 });
-
-=======
->>>>>>> origin/master
