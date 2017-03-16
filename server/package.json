@@ -1,0 +1,21 @@
+{
+  "name": "freepcvnode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "collections": "^5.0.6",
+    "express": "^4.15.0",
+    "moment": "^2.17.1",
+    "promise": "^7.1.1",
+    "request": "^2.79.0",
+    "ssl-root-cas": "^1.2.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

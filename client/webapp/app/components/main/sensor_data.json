@@ -1,0 +1,218 @@
+{
+  "levelOne": {
+    "rooms": {
+      "room1": {
+        "maximum": 40,
+        "in_use": 20,
+        "avaiable": 20
+      },
+      "room2": {
+        "maximum": 50,
+        "in_use": 21,
+        "avaiable": 29
+      },
+      "room3": {
+        "maximum": 8,
+        "in_use": 3,
+        "avaiable": 5
+      },
+      "room4": {
+        "maximum": 30,
+        "in_use": 0,
+        "avaiable": 30
+      },
+      "room5": {
+        "maximum": 35,
+        "in_use": 20,
+        "avaiable": 15
+      },
+      "room6": {
+        "maximum": 20,
+        "in_use": 9,
+        "avaiable": 11
+      },
+      "room7": {
+        "maximum": 34,
+        "in_use": 30,
+        "avaiable": 4
+      },
+      "room8": {
+        "maximum": 15,
+        "in_use": 5,
+        "avaiable": 10
+      },
+      "room9": {
+        "maximum": 48,
+        "in_use": 18,
+        "avaiable": 30
+      },
+      "room10": {
+        "maximum": 40,
+        "in_use": 2,
+        "avaiable": 38
+      }
+    }
+  },
+  "levelTwo": {
+    "rooms": {
+      "room1": {
+        "maximum": 10,
+        "in_use": 9,
+        "avaiable": 1
+      },
+      "room2": {
+        "maximum": 60,
+        "in_use": 20,
+        "avaiable": 40
+      },
+      "room3": {
+        "maximum": 24,
+        "in_use": 3,
+        "avaiable": 21
+      },
+      "room4": {
+        "maximum": 31,
+        "in_use": 11,
+        "avaiable": 20
+      },
+      "room5": {
+        "maximum": 16,
+        "in_use": 15,
+        "avaiable": 1
+      },
+      "room6": {
+        "maximum": 40,
+        "in_use": 0,
+        "avaiable": 40
+      },
+      "room7": {
+        "maximum": 30,
+        "in_use": 20,
+        "avaiable": 10
+      },
+      "room8": {
+        "maximum": 19,
+        "in_use": 7,
+        "avaiable": 12
+      },
+      "room9": {
+        "maximum": 40,
+        "in_use": 20,
+        "avaiable": 20
+      },
+      "room10": {
+        "maximum": 24,
+        "in_use": 24,
+        "avaiable": 0
+      }
+    }
+  },
+  "levelThree": {
+    "rooms": {
+      "room1": {
+        "maximum": 28,
+        "in_use": 15,
+        "avaiable": 13
+      },
+      "room2": {
+        "maximum": 30,
+        "in_use": 11,
+        "avaiable": 19
+      },
+      "room3": {
+        "maximum": 40,
+        "in_use": 10,
+        "avaiable": 30
+      },
+      "room4": {
+        "maximum": 38,
+        "in_use": 28,
+        "avaiable": 10
+      },
+      "room5": {
+        "maximum": 10,
+        "in_use": 5,
+        "avaiable": 5
+      },
+      "room6": {
+        "maximum": 21,
+        "in_use": 20,
+        "avaiable": 1
+      },
+      "room7": {
+        "maximum": 36,
+        "in_use": 9,
+        "avaiable": 27
+      },
+      "room8": {
+        "maximum": 47,
+        "in_use": 8,
+        "avaiable": 39
+      },
+      "room9": {
+        "maximum": 25,
+        "in_use": 14,
+        "avaiable": 11
+      },
+      "room10": {
+        "maximum": 17,
+        "in_use": 10,
+        "avaiable": 7
+      }
+    }
+  },
+  "levelFour": {
+    "rooms": {
+      "room1": {
+        "maximum": 20,
+        "in_use": 10,
+        "avaiable": 10
+      },
+      "room2": {
+        "maximum": 30,
+        "in_use": 10,
+        "avaiable": 20
+      },
+      "room3": {
+        "maximum": 33,
+        "in_use": 12,
+        "avaiable": 11
+      },
+      "room4": {
+        "maximum": 27,
+        "in_use": 9,
+        "avaiable": 18
+      },
+      "room5": {
+        "maximum": 40,
+        "in_use": 29,
+        "avaiable": 11
+      },
+      "room6": {
+        "maximum": 24,
+        "in_use": 18,
+        "avaiable": 6
+      },
+      "room7": {
+        "maximum": 11,
+        "in_use": 8,
+        "avaiable": 3
+      },
+      "room8": {
+        "maximum": 40,
+        "in_use": 0,
+        "avaiable": 40
+      },
+      "room9": {
+        "maximum": 33,
+        "in_use": 33,
+        "avaiable": 0
+      },
+      "room10": {
+        "maximum": 19,
+        "in_use": 2,
+        "avaiable": 17
+      }
+    }
+  }
+}

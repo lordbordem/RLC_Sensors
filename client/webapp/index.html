@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html ng-app="freepc">
+
+	<head>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
+
+
+	    <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css"></link>
+	    <link rel="stylesheet" type="text/css" href="./css/freepc.css"></link>
+
+	    <script type="text/javascript" src="./lib/ui-bootstrap-custom-2.0.2.js"></script>
+	    <script type="text/javascript" src="./lib/ui-bootstrap-custom-2.0.2.min.js"></script>
+	    <script type="text/javascript" src="./lib/ui-bootstrap-custom-tpls-2.0.2.min.js"></script>
+	    <script type="text/javascript" src="./lib/angular-resource.js"></script>
+	    <script type="text/javascript" src="./lib/angular-sanitize.min.js"></script>
+	    <script type="text/javascript" src="./lib/angular-animate.min.js"></script>
+
+
+	    <!--<script src="{{ url_for('static', filename='app/app.js') }}"></script>
+	    <script src="{{ url_for('static', filename='app/components/main/mainController.js') }}"></script> -->
+	    <script src="./app.js"></script>
+	    <script src="./components/main/MainController.js"></script>
+	    <script src="./components/main/MainService.js"></script>
+	    <!--<script src="/static/app/components/main/sensor_data.json"></script>-->
+	</head>
+
+	<body ng-controller="mainCtrl as vm">
+    	<uib-accordion class="accordion" close-others="oneAtATime" ng-repeat="level in angularLevels">
+	    	<div class="accordion" uib-accordion-group class="panel-default" is-open="status.open">
+		      <uib-accordion-heading>
+		        <span class="title"> Floor {{ level.name }} </span>
+            <div style="display: inline; font-size: 12px"> ( {{ level.freePCs }} of {{ level.capacity }} free )</div>
+		        <div class="col-sm-4">
+              <uib-progressbar class="level-progressbar" value="level.percentage" type="{{ level.type }}">
+              </uib-progressbar>
+            </div>
+		      </uib-accordion-heading>
+		      <div style="width:100%; overflow-x:scroll ; overflow-y: hidden; padding-bottom:10px;">
+		      	<div ng-repeat="room in level.rooms" style="display:inline-block; ">
+		      	 <button uib-popover=" Free: {{ room.freePCs }} Taken: {{ room.PCLogins }} Maximum: {{ room.capacity }}" type="button" class="btn btn-default" popover-trigger="'outsideClick'">
+		      	 	<span class="availableRoom">{{ room.freePCs }}</span>
+			      	<br>
+			      	<span class="roomName">{{ room.name }}</span>
+		      	 </button>
+		      	</div>
+		      </div>
+		    </div>
+	</body>
+</html>

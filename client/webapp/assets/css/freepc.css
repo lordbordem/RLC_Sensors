@@ -1,0 +1,47 @@
+body {
+	background-color: black;
+}
+
+.panel-default>.panel-heading {
+	color:white;
+	background-color: #333333;
+	border-color: #333333 !important;
+    padding-bottom: 1px;
+}
+
+.panel-body {
+    background-color: #333333 !important;
+    border-color: #333333 !important;
+}
+
+.panel-group .panel-heading {
+    border-bottom: 0;
+    background-color: #333333 !important	;
+    color: white;
+    border-color: #333333;
+}
+
+.title {
+    font-size: 20px;
+    margin: 15px;
+}
+
+.availableRoom {
+	font-size:27px;
+    color: #5cb85c;
+}
+
+.roomName {
+	font-size:15px;
+}
+
+button.btn.btn-default{
+    color: white !important;
+    background-color: black !important;
+    border-color: #333333 !important;
+}
+
+.level-progressbar{
+    margin-top:10px;
+    background-color: #636363
+}
