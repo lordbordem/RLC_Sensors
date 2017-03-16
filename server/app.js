@@ -2,10 +2,15 @@
 
 var express = require('express')
 var app = express()
+  , io = require('socket.io')(server) // new
+  , events = require('events')
+  , EventEmitter = require('events').EventEmitter
+  , ejs= require('ejs')
 
 var path = require('path')
 var moment = require('moment');
 
+<<<<<<< HEAD
 var locationList = ['']
 
 
@@ -40,6 +45,54 @@ var dbPeopleCounterList =
     "PC1133-Level11StairsUp": {}
 
   };
+=======
+var underscore = require("underscore.string");
+var math = require('mathjs');
+
+var sqlite3 = require('sqlite3').verbose()
+,   db = new sqlite3.Database('RCLSequelize.db')
+,   Sequelize = require('sequelize');;
+
+var roomsList = ['E1-04201', 'E1-05204', 'E1-05300', 'E1-053L0', 'E1-053V0', 'E1-05402', 'E1-06101', 'E1-06102', 'E1-06103', 'E1-061V2', 'E1-07403', 'E1-07404', 'E1-07405', 'E1-07406', 'E1-08409','E1-09405', 'E1-10104', 'E1-11300', 'E1-11302', 'E1-11403', 'E1-B1100', 'E1-B1102', 'E1-B1103', 'E1-B11V2', 'E1-B11V3', 'E1-B1203', 'E1-B1204', 'E1-B1400', 'E1-B1401', 'E1-B1402', 'E1-B1403', 'E1-B14V0', 'E1-B14V1', 'E1-B14V2', 'E1-B14V3'];
+var dbRooms = 
+ {
+    "E1-07404": {"capacity": 21},
+    "E1-11403": {"capacity": 28},
+    "E1-07406": {"capacity": 29},
+    "E1-07403": {"capacity": 21},
+    "E1-B1204": {"capacity": 31},
+    "E1-B1400": {"capacity": 36},
+    "E1-B1401": {"capacity": 43},
+    "E1-B1402": {"capacity": 47},
+    "E1-B1403": {"capacity": 47},
+    "E1-B14V2": {"capacity": 47},
+    "E1-B14V3": {"capacity": 46},
+    "E1-061V2": {"capacity": 27},
+    "E1-B14V1": {"capacity": 44},
+    "E1-05402": {"capacity": 4},
+    "E1-10104": {"capacity": 33},
+    "E1-07405": {"capacity": 29},
+    "E1-B14V0": {"capacity": 34},
+    "E1-04201": {"capacity": 7},
+    "E1-B1203": {"capacity": 31},
+    "E1-B1100": {"capacity": 36},
+    "E1-B1103": {"capacity": 31},
+    "E1-B1102": {"capacity": 30},
+    "E1-053L0": {"capacity": 6},
+    "E1-05204": {"capacity": 4},
+    "E1-09405": {"capacity": 51},
+    "E1-08409": {"capacity": 39},
+    "E1-053V0": {"capacity": 10},
+    "E1-06102": {"capacity": 31},
+    "E1-06103": {"capacity": 15},
+    "E1-06101": {"capacity": 25},
+    "E1-B11V3": {"capacity": 29},
+    "E1-B11V2": {"capacity": 27},
+    "E1-11300": {"capacity": 11},
+    "E1-05300": {"capacity": 22},
+    "E1-11302": {"capacity": 15}
+};
+>>>>>>> origin/master
 
 var dbLevels = {};
 
