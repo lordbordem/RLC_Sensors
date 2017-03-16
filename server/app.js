@@ -7,7 +7,7 @@ var app = express()
   , events = require('events')
   , EventEmitter = require('events').EventEmitter
   , ip = require('ip')
-  , ejs= require('ejs');;;;;;
+  , ejs= require('ejs');
 
 var path = require('path')
 var moment = require('moment');
@@ -34,7 +34,7 @@ var dbPeopleCounterOUT =
     "PC09.28": {"OUT": 21},
     "PC11.33": {"OUT": 21}
   };
-  
+
 var dbPeopleCounterIN =
   {
     "PC00.07": {"IN": 21},
@@ -47,7 +47,7 @@ var dbPeopleCounterIN =
     "PC09.28": {"IN": 21},
     "PC11.33": {"OUT": 21}
   };
-  
+
 var dbPeopleCounterTotalOUT =
   {
     "PC00.07": {"TotalOUT": 21},
@@ -73,7 +73,7 @@ var dbPeopleCounterTotalIN =
     "PC09.28": {"TotalIN": 21},
     "PC11.33": {"TotalIN": 21}
    };
-   
+
 var totalkjUP = 0;
 var totalkjDOWN = 0;
 
@@ -81,6 +81,7 @@ var totalstairdown = 0;
 var totalstairup = 0;
 var totalupsteps = 0;
 var totaldownsteps = 0;
+var totalstairs = 0;
 
 function totalupkj(pplCounterList, pplCount_list){
 console.log("calculating total up");
@@ -92,8 +93,8 @@ console.log("calculating total up");
 	totalkjUP = totalstairup *17.2;
 	console.log(totalstairup + " UTS Students burned a total of " + totalkjUP + "kj going down a total of " + totalupsteps + " steps");
 }
-	
-	
+
+
 function totaldownkj(pplCounterList, pplCount_list){
 console.log("calculating total down");
 	for(let pplCount of pplCount_list){
@@ -103,6 +104,10 @@ console.log("calculating total down");
 	console.log(totalstairdown);
 	totalkjDOWN = totalstairdown * 5.1;
 	console.log(totalstairdown + " UTS Students burned a total of " + totalkjDOWN + "kj going down a total of " + totaldownsteps + " steps");
+}
+
+function totalStair(totalstairdown,totalstairup){
+  totalstairs = totalstairdown + totalstairsup;
 }
 
 
@@ -223,31 +228,31 @@ var getPeopleOutCounter = function(pplCounterList, pplCount_list){
 		var request = require('request');
 		var url = "https://eif-research.feit.uts.edu.au/api/json/?rFromDate="+ fromDate +"&rToDate="+ toDate +"&rFamily=people&rSensor=" + "+" + pplCount + "+" + "%28Out%29"
 
-		//Line added to deal with the authorisation request from the uts api. 
+		//Line added to deal with the authorisation request from the uts api.
 		//(note: it is not the best practice and not very secure, but till an alternative is found, this is the solution)
 		process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-	
+
 		//Debugging
 		console.log("Sending request");
 		request(url , function (error, response, body) {
 			//Debugging
 			console.log("got response");
 			//console.log(body);
-			
+
 			//Alternative fix to the authorisation problem, still in progress (slows down everything)
 			//require('ssl-root-cas').inject();
 			if (!error && response.statusCode == 200) {
 			 	//Gets the body response from the request call and formats it to json
 			 	//Adds information to dbRooms
 				addInfoTodbPPlCountOut(body, pplCount);
-	 
+
 			}else{
 			  	console.log(error);
 
 			}
 		})
 	}
-	
+
 
 }
 
@@ -280,24 +285,24 @@ var getPeopleINCounter = function(pplCounterList, pplCount_list){
 		var request = require('request');
 		var url = "https://eif-research.feit.uts.edu.au/api/json/?rFromDate="+ fromDate +"&rToDate="+ toDate +"&rFamily=people&rSensor=" + "+" + pplCount + "+" + "%28In%29"
 
-		//Line added to deal with the authorisation request from the uts api. 
+		//Line added to deal with the authorisation request from the uts api.
 		//(note: it is not the best practice and not very secure, but till an alternative is found, this is the solution)
 		process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-	
+
 		//Debugging
 		console.log("Sending request");
 		request(url , function (error, response, body) {
 			//Debugging
 			console.log("got response");
 			//console.log(body);
-			
+
 			//Alternative fix to the authorisation problem, still in progress (slows down everything)
 			//require('ssl-root-cas').inject();
 			if (!error && response.statusCode == 200) {
 			 	//Gets the body response from the request call and formats it to json
 			 	//Adds information to dbRooms
 				addInfoTodbPPlCountIn(body, pplCount);
-	 
+
 			}else{
 			  	console.log(error);
 
@@ -343,7 +348,7 @@ var getWaspmotes = function(waspmoteList, waspmote_list){
 		console.log("the url is.." + url);
 		counter++;
 		//console.log(waspmote);
-		//Line added to deal with the authorisation request from the uts api. 
+		//Line added to deal with the authorisation request from the uts api.
 		//(note: it is not the best practice and not very secure, but till an alternative is found, this is the solution)
 		process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 		console.log("The count of waspmote currently is... " + counter);
@@ -360,7 +365,7 @@ var getWaspmotes = function(waspmoteList, waspmote_list){
 			 	//Gets the body response from the request call and formats it to json
 			 	//Adds information to dbRooms
 				addInfoTodbWaspmote(body, waspmote);
-	 
+
 			}else{
 			  	console.log(error);
 
@@ -569,8 +574,8 @@ getPeopleINCounter(dbPeopleCounterIN,peopleCounterLocationList);
 getPeopleOutCounter(dbPeopleCounterOUT,peopleCounterLocationList);
 
 var serverIP = ip.address() ;
-setTimeout(function(){ 
-  server.listen(app.get('port'), serverIP, function(){ 
+setTimeout(function(){
+  server.listen(app.get('port'), serverIP, function(){
   console.log('Express server listening on: ', serverIP, ':', app.get('port'));
 });
 }, 2000);
@@ -652,20 +657,22 @@ io.on('connection', function (socket) {
 
 
     function initialUpdate() {
-	
+
 		socket.emit('upkj', JSON.stringify(data));
 		socket.emit('downkj', JSON.stringify(data));
 		socket.emit('totalstairsup', JSON.stringify(data));
 		socket.emit('totalstairsdown', JSON.stringify(data));
 		socket.emit('totalentrance', JSON.stringify(data));
 		socket.emit('totalexit', JSON.stringify(data));
+    socket.emit('totalstairs', JSON.stringify(totalstairs));
+
     };
-	
+
 
 
 
     function UpdatePage() {
-      
+
     }
 
 
