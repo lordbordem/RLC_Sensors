@@ -14,9 +14,13 @@ var moment = require('moment');
 
 var async = require('async');
 
-var locationList = ['']
+var locationList = [''];
+
+const util = require('util');
 
 var peopleCounterLocationList = ['PC00.07', 'PC01.12', 'PC01.13', 'PC02.14', 'PC02.16', 'PC05.22',  'PC09.27', 'PC09.28', 'PC11.33'];
+var peopleStairLocationList = ['PC05.22',  'PC09.27', 'PC09.28', 'PC11.33'];
+var peopleEntrancelocationList = ['PC00.07', 'PC01.12', 'PC01.13', 'PC02.14', 'PC02.16'];
 
 var dbPeopleCounterOUT =
   {
@@ -40,8 +44,67 @@ var dbPeopleCounterIN =
     "PC02.16": {"IN": 21},
     "PC05.22": {"IN": 21},
     "PC09.27": {"IN": 21},
-    "PC09.28": {"IN": 21}
+    "PC09.28": {"IN": 21},
+    "PC11.33": {"OUT": 21}
   };
+  
+var dbPeopleCounterTotalOUT =
+  {
+    "PC00.07": {"TotalOUT": 21},
+    "PC01.12": {"TotalOUT": 21},
+    "PC01.13": {"TotalOUT": 21},
+    "PC02.14": {"TotalOUT": 21},
+    "PC02.16": {"TotalOUT": 21},
+    "PC05.22": {"TotalOUT": 21},
+    "PC09.27": {"TotalOUT": 21},
+    "PC09.28": {"TotalOUT": 21},
+    "PC11.33": {"TotalOUT": 21}
+  };
+
+var dbPeopleCounterTotalIN =
+  {
+    "PC00.07": {"TotalIN": 21},
+    "PC01.12": {"TotalIN": 21},
+    "PC01.13": {"TotalIN": 21},
+    "PC02.14": {"TotalIN": 21},
+    "PC02.16": {"TotalIN": 21},
+    "PC05.22": {"TotalIN": 21},
+    "PC09.27": {"TotalIN": 21},
+    "PC09.28": {"TotalIN": 21},
+    "PC11.33": {"TotalIN": 21}
+   };
+   
+var totalkjUP = 0;
+var totalkjDOWN = 0;
+
+var totalstairdown = 0;
+var totalstairup = 0;
+var totalupsteps = 0;
+var totaldownsteps = 0;
+
+function totalupkj(pplCounterList, pplCount_list){
+console.log("calculating total up");
+	for(let pplCount of pplCount_list){
+		totalstairup += dbPeopleCounterTotalIN[pplCount]["TotalIN"]
+	}
+	totalupsteps = totalstairup * 22;
+	console.log(totalstairup);
+	totalkjUP = totalstairup *17.2;
+	console.log(totalstairup + " UTS Students burned a total of " + totalkjUP + "kj going down a total of " + totalupsteps + " steps");
+}
+	
+	
+function totaldownkj(pplCounterList, pplCount_list){
+console.log("calculating total down");
+	for(let pplCount of pplCount_list){
+		totalstairdown += dbPeopleCounterTotalOUT[pplCount]["TotalOUT"]
+	}
+	totaldownsteps = totalstairdown * 22;
+	console.log(totalstairdown);
+	totalkjDOWN = totalstairdown * 5.1;
+	console.log(totalstairdown + " UTS Students burned a total of " + totalkjDOWN + "kj going down a total of " + totaldownsteps + " steps");
+}
+
 
 
 
@@ -64,9 +127,7 @@ var dbPeopleCounterList =
 var underscore = require("underscore.string");
 var math = require('mathjs');
 
-var sqlite3 = require('sqlite3').verbose()
-,   db = new sqlite3.Database('RCLSequelize.db')
-,   Sequelize = require('sequelize');;
+
 
 //var waspmoteList = ['ES_B_04_415_7BD1','ES_B_05_416_7C15','ES_B_10_427_7B90','ES_B_07_420_7E1D','ES_B_09_425_3E8D','ES_B_10_426_7E1E','ES_B_05_417_7C13','ES_B_01_411_7E39','ES_A_05_175_CE2E','ES_B_09_424_B74C','ES_B_12_431_7BC2','ES_B_04_414_7C00','ES_B_07_421_7C17','ES_B_11_429_3E90','ES_B_08_423_7BE2','ES_B_12_430_44DE','ES_B_02_412_3E68','ES_B_06_418_7BED','ES_C_13_302_C88E','ES_B_06_419_7C09','ES_B_08_422_7BDC','ES_B_11_428_3EA4','ES_A_03_141_CE3A','ES_A_03_151_CE38','ES_A_07_293_3E72','ES_A_03_153_CE2A','ES_A_04_163_7C58','ES_A_06_195_3E87','ES_A_13_276_7C44','ES_A_04_159_7B7E','ES_A_09_298_7BC5','ES_A_12_301_7BB6','ES_A_09_226_44DF','ES_A_07_207_44FA']
 /*
@@ -152,44 +213,90 @@ var dbLevels = {};
 var counter = 0;
 
 
-var getPeopleCounter = function(pplCounterList, pplCount_list){
+var getPeopleOutCounter = function(pplCounterList, pplCount_list){
 	//Get time now, and time half an hour ago, and transform it into the correct format
 	var toDate = getTimeNow();
-	var fromDate = getTime48HourAgo();
-
-
-	// Debugging time formats
-	// console.log(toDate);
-	// console.log(fromDate);
-
+	var fromDate = getTime1WeekAgo();
 
 	//For every waspmote in the predefined array, retrieve the json from the specfic url
 	for(let pplCount of pplCount_list){
-
 		var request = require('request');
 		var url = "https://eif-research.feit.uts.edu.au/api/json/?rFromDate="+ fromDate +"&rToDate="+ toDate +"&rFamily=people&rSensor=" + "+" + pplCount + "+" + "%28Out%29"
-	
-		console.log("the url is.." + url);
-		counter++;
-		
-		//console.log(waspmote);
+
 		//Line added to deal with the authorisation request from the uts api. 
 		//(note: it is not the best practice and not very secure, but till an alternative is found, this is the solution)
 		process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-		console.log("The count of waspmote currently is... " + counter);
+	
 		//Debugging
 		console.log("Sending request");
 		request(url , function (error, response, body) {
 			//Debugging
 			console.log("got response");
-			console.log(body);
+			//console.log(body);
+			
 			//Alternative fix to the authorisation problem, still in progress (slows down everything)
 			//require('ssl-root-cas').inject();
-
 			if (!error && response.statusCode == 200) {
 			 	//Gets the body response from the request call and formats it to json
 			 	//Adds information to dbRooms
-				addInfoTodbPPlCount(body, pplCount);
+				addInfoTodbPPlCountOut(body, pplCount);
+	 
+			}else{
+			  	console.log(error);
+
+			}
+		})
+	}
+	
+
+}
+
+
+//Updates Total Out Counter for The People Counter
+var addInfoTodbPPlCountOut = function(body, pplCount){
+	console.log("The current pplCount before is... " + counter);
+	var jsonBody = JSON.parse(body);
+	for(var attributename in jsonBody){
+		//console.log("The current pplcount is... " + attributename);
+		//pplCountDB.set({Sensor_Name: pplCount, OUT: "OUT", TIME: jsonBody[attributename][0], ppl: jsonBody[attributename][1]});
+    	dbPeopleCounterOUT[pplCount]["OUT"] = jsonBody[attributename][1];
+		dbPeopleCounterTotalOUT[pplCount]["TotalOUT"] += jsonBody[attributename][1];
+		//console.log("The total out for " + dbPeopleCounterTotalOUT[pplCount] + "is the following" + dbPeopleCounterTotalOUT[pplCount]["TotalOUT"]);
+	}
+	totaldownkj(dbPeopleCounterTotalOUT,peopleStairLocationList);
+
+	//console.log(util.inspect(dbPeopleCounterTotalOUT, {showHidden: false, depth: null}))
+
+}
+
+
+var getPeopleINCounter = function(pplCounterList, pplCount_list){
+	//Get time now, and time half an hour ago, and transform it into the correct format
+	var toDate = getTimeNow();
+	var fromDate = getTime1WeekAgo();
+
+	//For every waspmote in the predefined array, retrieve the json from the specfic url
+	for(let pplCount of pplCount_list){
+		var request = require('request');
+		var url = "https://eif-research.feit.uts.edu.au/api/json/?rFromDate="+ fromDate +"&rToDate="+ toDate +"&rFamily=people&rSensor=" + "+" + pplCount + "+" + "%28In%29"
+
+		//Line added to deal with the authorisation request from the uts api. 
+		//(note: it is not the best practice and not very secure, but till an alternative is found, this is the solution)
+		process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+	
+		//Debugging
+		console.log("Sending request");
+		request(url , function (error, response, body) {
+			//Debugging
+			console.log("got response");
+			//console.log(body);
+			
+			//Alternative fix to the authorisation problem, still in progress (slows down everything)
+			//require('ssl-root-cas').inject();
+			if (!error && response.statusCode == 200) {
+			 	//Gets the body response from the request call and formats it to json
+			 	//Adds information to dbRooms
+				addInfoTodbPPlCountIn(body, pplCount);
 	 
 			}else{
 			  	console.log(error);
@@ -200,19 +307,19 @@ var getPeopleCounter = function(pplCounterList, pplCount_list){
 }
 
 
-
-//Adds information to dbRooms, and also calls populate levels
-//The function"Populate levels" is being called in here to
-//avoid js asynchronus execution
-var addInfoTodbPPlCount = function(body, pplCount){
-	console.log("The current pplCount before is... " + counter);
+//Updates Total IN Counter for The People Counter
+var addInfoTodbPPlCountIn = function(body, pplCount){
+	//console.log("The current pplCount before is... " + counter);
 	var jsonBody = JSON.parse(body);
 	for(var attributename in jsonBody){
-		console.log("The current waspmote is... " + attributename);
-    	dbPeopleCounterOUT[pplCount]["OUT"] = jsonBody[attributename][1];
-		console.log(dbPeopleCounterOUT[pplCount]["OUT"]);
+		//console.log("The current pplcount is... " + attributename);
+		//pplCountDB.set({Sensor_Name: pplCount, OUT: "OUT", TIME: jsonBody[attributename][0], ppl: jsonBody[attributename][1]});
+    	dbPeopleCounterIN[pplCount]["IN"] = jsonBody[attributename][1];
+		dbPeopleCounterTotalIN[pplCount]["TotalIN"] += jsonBody[attributename][1];
+		//console.log("The total in for " + pplCount + "is the following" + dbPeopleCounterTotalIN[pplCount]["TotalIN"]);
 	}
-
+	totalupkj(dbPeopleCounterTotalIN,peopleStairLocationList);
+	//console.log(util.inspect(dbPeopleCounterTotalIN, {showHidden: false, depth: null}))
 }
 
 
@@ -443,10 +550,23 @@ var getTime48HourAgo = function(){
 }
 
 
+var getTime1WeekAgo = function(){
+	var now = moment().format();
+	var halfHourAgo = moment(now).subtract("7", "days").format();
+	var timenow = halfHourAgo.toString().split("+");
+	var timeSplit = timenow[0].toString().split(":");
+	var finalNow = timeSplit[0] + "%3A" + timeSplit[1] + "%3A" + timeSplit[2];
+
+	return finalNow;
+
+}
+
+
 //Calls to function
 //getCurrPcLogin(dbRooms, roomsList);
 //getWaspmotes(dbWaspmote,waspmoteList);
-getPeopleCounter(dbPeopleCounterOUT,peopleCounterLocationList);
+getPeopleINCounter(dbPeopleCounterIN,peopleCounterLocationList);
+getPeopleOutCounter(dbPeopleCounterOUT,peopleCounterLocationList);
 
 var serverIP = ip.address() ;
 setTimeout(function(){ 
@@ -484,6 +604,8 @@ app.listen(3000, function () {
 })
 
 //Sockets (Real Time Updating)
+var user_count = 0;
+
 
 io.on('connection', function (socket) {
     user_count++;
@@ -491,7 +613,6 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('users', { number: user_count });
     console.log("user_count: ", user_count);
     console.log("socket is connected");
-    console.log("socket is connected to user: " + socket.request.user.username);
     initialpageUpdate();
     pageUpdate();
 
@@ -531,206 +652,22 @@ io.on('connection', function (socket) {
 
 
     function initialUpdate() {
-        model.temperature.findAll({
-            attributes: ['temp', 'time'],
-            where: {
-                usernameID: socket.request.user.username
-            }
-        }).then(function (data) {
-            //console.log("the temperature variable has: " + JSON.stringify(data));
-            socket.emit('TempJSON', JSON.stringify(data));
-        });
-
-        model.humidity.findAll({
-            attributes: ['h20', 'time'],
-            where: {
-                usernameID: socket.request.user.username
-            }
-        }).then(function (data) {
-            //console.log("the humidity variable has: " + JSON.stringify(data));
-            socket.emit('HumJSON', JSON.stringify(data));
-        });
-
-        model.Monoxide.findAll({
-            attributes: ['CO', 'time'],
-            where: {
-                usernameID: socket.request.user.username
-            }
-        }).then(function (data) {
-            //console.log("the Monoxide variable has: " + JSON.stringify(data));
-            socket.emit('MonoJSON', JSON.stringify(data));
-        });
-        model.Methane.findAll({
-            attributes: ['meth', 'time'],
-            where: {
-                usernameID: socket.request.user.username
-            }
-        }).then(function (data) {
-            //console.log("the Methane variable has: " + JSON.stringify(data));
-            socket.emit('MethJSON', JSON.stringify(data));
-        });
+	
+		socket.emit('upkj', JSON.stringify(data));
+		socket.emit('downkj', JSON.stringify(data));
+		socket.emit('totalstairsup', JSON.stringify(data));
+		socket.emit('totalstairsdown', JSON.stringify(data));
+		socket.emit('totalentrance', JSON.stringify(data));
+		socket.emit('totalexit', JSON.stringify(data));
     };
+	
 
-    var energyPIE;
-    var waterPIE;
-    var gasPIE;
-    var methanePIE;
-    var monoxidePIE;
+
 
     function UpdatePage() {
-        model.temperature.findAll({
-            attributes: ['temp'],
-            where: {
-                usernameID: socket.request.user.username
-            }
-        }).then(function (data) {
-
-            var tempArray = [];
-
-            tempArray = data.map(function (data) {
-                return data.temp
-            });
-
-            var averageTemp = math.mean(tempArray);
-            var totalEnergy = 0;
-            if (averageTemp > 25.3) {
-                var totalEnergy = (((averageTemp / 35.3)) - 1);
-            } else {
-                var totalEnergy = (averageTemp / 35.3)
-            }
-            energyPIE = averageTemp;
-            console.log("the energyPIE1 packet has: " + energyPIE);
-            console.log("the total energy consumpution variable has: " + totalEnergy);
-            socket.emit('energyCircle', totalEnergy);
-        });
-
-        model.humidity.findAll({
-            attributes: ['h20'],
-            where: {
-                usernameID: socket.request.user.username
-            }
-        }).then(function (data) {
-
-            var tempArray = [];
-
-            tempArray = data.map(function (data) {
-                return data.h20
-            });
-
-            var averageHumidity = math.mean(tempArray);
-            var totalWater = 0;
-            if (averageHumidity > 55) {
-                var totalWater = (((averageHumidity / 55)) - 1);
-            } else {
-                var totalWater = (averageHumidity / 55);
-            }
-            waterPIE = averageHumidity;
-            console.log("the waterPIE1 packet has: " + waterPIE);
-            console.log("the total water consumpution variable has: " + totalWater);
-            socket.emit('waterCircle', totalWater);
-        });
-        model.Monoxide.findAll({
-            attributes: ['CO'],
-            where: {
-                usernameID: socket.request.user.username
-            }
-        }).then(function (data) {
-            var tempArray = [];
-
-            tempArray = data.map(function (data) {
-                return data.CO
-            });
-
-            var averageMonoxide = math.mean(tempArray);
-
-            monoxidePIE = (averageMonoxide);
-            console.log("the monoxidePIE packet has: " + monoxidePIE);
-        });
-
-        model.Methane.findAll({
-            attributes: ['meth'],
-            where: {
-                usernameID: socket.request.user.username
-            }
-        }).then(function (data) {
-            var tempArray = [];
-
-            tempArray = data.map(function (data) {
-                return data.meth
-            });
-
-            var averageMethane = math.mean(tempArray);
-            methanePIE = (averageMethane);
-            console.log("the methanePie packet has: " + methanePIE);
-        });
-
-
-
-        model.temperature.max('temp', {
-            where: {
-                usernameID: socket.request.user.username
-            }
-
-        }).then(function (data) {
-            console.log("the highest temperature is: " + data);
-            socket.emit('maxTemp', underscore.toNumber(data));
-        });
-        model.humidity.max('h20', {
-            where: {
-                usernameID: socket.request.user.username
-            }
-
-        }).then(function (data) {
-            console.log("the highest humidity is: " + data);
-            socket.emit('maxHumidity', underscore.toNumber(data));
-        });
-        model.Monoxide.max('CO', {
-            where: {
-                usernameID: socket.request.user.username
-            }
-
-        }).then(function (data) {
-            console.log("the highest monoxide is: " + data);
-            socket.emit('maxMono', underscore.toNumber(data) * 10);
-        });
-
-        model.Methane.max('meth', {
-            where: {
-                usernameID: socket.request.user.username
-            }
-
-        }).then(function (data) {
-            console.log("the highest Methane is: " + data);
-            socket.emit('maxMeth', underscore.toNumber(data) * 10);
-        });
-
-        PIEUpdate();
+      
     }
 
-    function PIEUpdate() {
-        gasPIE = monoxidePIE + methanePIE;
-        console.log("the monoxidePIE packet has: " + gasPIE);
-        console.log("the methanePIE packet has: " + waterPIE);
-        var total = gasPIE + waterPIE + energyPIE;
-        console.log("the gasPIE packet has: " + gasPIE);
-        console.log("the waterPIE packet has: " + waterPIE);
-        console.log("the energyPIE packet has: " + energyPIE);
-        console.log("the total packet has: " + total);
-
-
-        var waterPer = ((waterPIE / total) * 100);
-        var energyPer = (energyPIE / total) * 100;
-        var gasPer = (gasPIE / total) * 100;
-
-        console.log("the waterPer packet has: " + waterPer);
-        console.log("the energyPer packet has: " + energyPer);
-        console.log("the gasPer packet has: " + gasPer);
-
-        var piePacket = [underscore.toNumber(waterPer), underscore.toNumber(energyPer), underscore.toNumber(gasPer)];
-        console.log("the pie packet has: " + piePacket);
-        socket.emit('pieUpdate', piePacket);
-
-    }
 
 
 });
