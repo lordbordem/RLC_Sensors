@@ -12,8 +12,50 @@ var app = express()
 var path = require('path')
 var moment = require('moment');
 
+<<<<<<< HEAD
 var async = require('async');
 
+=======
+<<<<<<< HEAD
+var locationList = ['']
+
+
+var peopleCounterLocationList = ['PCB101-LevelB1CenterPCLabs1', 'PCB102-LevelB1WesternPCLabs1', 'PC0005-WattleStreetWest1,' 'PC0006-WattleStreetWest2', 'PC0007-WattleStB10Entrance', 'PC0008-BroadwayWest2Stairs', 'PC0009-BroadwayWest1', 'PC0111-CafeWest', 'PC0112-StairsToLevel2', 'PC0113-PennyLaneExit', 'PC0214-BroadwayEastEntrance', 'PC0215-DataArena', 'PC0216-JonesStEntrance', 'PC0420-Classroom400', 'PC0522-Level5StairsDown', 'PC0523-Classroom200', 'PC0825-CHTArea', 'PC0926-CassArea', 'PC0927-Level9StairsUp', 'PC0928-Level9StairsDown', 'PC0929-StaffCommonRoom', 'PC1030-Level10BridgeEast', 'PC1131-Level11BridgeEast', 'PC1132-SchoolOfCivil', 'PC1133-Level11StairsUp'];
+
+var dbPeopleCounterList =
+  {
+    "PCB101-LevelB1CenterPCLabs1": {"Out": },
+    "PCB102-LevelB1WesternPCLabs1": {},
+    "PC0005-WattleStreetWest1": {},
+    "PC0006-WattleStreetWest2": {},
+    "PC0007-WattleStB10Entrance": {},
+    "PC0008-BroadwayWest2Stairs": {},
+    "PC0009-BroadwayWest1": {},
+    "PC0111-CafeWest": {},
+    "PC0112-StairsToLevel2": {},
+    "PC0113-PennyLaneExit": {},
+    "PC0214-BroadwayEastEntrance": {},
+    "PC0215-DataArena": {},
+    "PC0216-JonesStEntrance": {},
+    "PC0420-Classroom400": {},
+    "PC0522-Level5StairsDown": {},
+    "PC0523-Classroom200": {},
+    "PC0825-CHTArea": {},
+    "PC0926-CassArea": {},
+    "PC0927-Level9StairsUp": {},
+    "PC0928-Level9StairsDown": {},
+    "PC0929-StaffCommonRoom": {},
+    "PC1030-Level10BridgeEast": {},
+    "PC1131-Level11BridgeEast": {},
+    "PC1132-SchoolOfCivil": {},
+    "PC1133-Level11StairsUp": {}
+
+  };
+
+
+
+=======
+>>>>>>> origin/master
 var underscore = require("underscore.string");
 var math = require('mathjs');
 
@@ -68,7 +110,7 @@ var dbWaspmote = {
 
 
 var roomsList = ['E1-04201', 'E1-05204', 'E1-05300', 'E1-053L0', 'E1-053V0', 'E1-05402', 'E1-06101', 'E1-06102', 'E1-06103', 'E1-061V2', 'E1-07403', 'E1-07404', 'E1-07405', 'E1-07406', 'E1-08409','E1-09405', 'E1-10104', 'E1-11300', 'E1-11302', 'E1-11403', 'E1-B1100', 'E1-B1102', 'E1-B1103', 'E1-B11V2', 'E1-B11V3', 'E1-B1203', 'E1-B1204', 'E1-B1400', 'E1-B1401', 'E1-B1402', 'E1-B1403', 'E1-B14V0', 'E1-B14V1', 'E1-B14V2', 'E1-B14V3'];
-var dbRooms = 
+var dbRooms =
  {
     "E1-07404": {"capacity": 21},
     "E1-11403": {"capacity": 28},
@@ -106,6 +148,7 @@ var dbRooms =
     "E1-05300": {"capacity": 22},
     "E1-11302": {"capacity": 15}
 };
+>>>>>>> origin/master
 
 var dbLevels = {};
 
@@ -178,7 +221,7 @@ var getCurrPcLogin = function(dbRooms, rooms_list){
 		var url = "https://eif-research.feit.uts.edu.au/api/json/?rFromDate="+ fromDate +"&rToDate="+ toDate +"&rFamily=logins&rSensor=" + room
 
 		console.log(room);
-		//Line added to deal with the authorisation request from the uts api. 
+		//Line added to deal with the authorisation request from the uts api.
 		//(note: it is not the best practice and not very secure, but till an alternative is found, this is the solution)
 		process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
@@ -195,7 +238,7 @@ var getCurrPcLogin = function(dbRooms, rooms_list){
 			 	//Gets the body response from the request call and formats it to json
 			 	//Adds information to dbRooms
 				addInfoTodbRooms(body, room);
-	 
+
 			}else{
 			  	console.log(error);
 
@@ -206,7 +249,7 @@ var getCurrPcLogin = function(dbRooms, rooms_list){
 
 
 //Adds information to dbRooms, and also calls populate levels
-//The function"Populate levels" is being called in here to 
+//The function"Populate levels" is being called in here to
 //avoid js asynchronus execution
 var addInfoTodbRooms = function(body, room){
 	var jsonBody = JSON.parse(body);
@@ -272,7 +315,7 @@ var populateLevels = function(rooms_list, room){
 
 
 //function turns time into the correct format to put in the url for the api retrieval
-//eg of the correct format 
+//eg of the correct format
 //2017-03-01T09%3A31%3A44
 var getTimeNow = function(){
 	var now = moment().format();
@@ -284,7 +327,7 @@ var getTimeNow = function(){
 
 }
 
-//Similar role to the function above, but instead of returning the time now, 
+//Similar role to the function above, but instead of returning the time now,
 //returns the time 30 minutes ago from now, in the correct format
 //for url
 var getTimeHalfHourAgo = function(){
@@ -321,7 +364,7 @@ app.use(express.static(path.join(__dirname, "../client", "/webapp/app")))
 
 //Serves the index.html page
 app.get('/', function (req, res) {
-  
+
   res.sendFile(path.join(__dirname, "../client", "/webapp/index.html"))
 })
 
@@ -336,6 +379,7 @@ app.get('/data', function (req, res) {
 app.listen(3000, function () {
   console.log('Applistening on port 3000!')
 })
+<<<<<<< HEAD
 
 //Sockets (Real Time Updating)
 
@@ -589,3 +633,5 @@ io.on('connection', function (socket) {
 
 });
 
+=======
+>>>>>>> origin/master
