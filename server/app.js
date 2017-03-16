@@ -12,11 +12,8 @@ var app = express()
 var path = require('path')
 var moment = require('moment');
 
-<<<<<<< HEAD
 var async = require('async');
 
-=======
-<<<<<<< HEAD
 var locationList = ['']
 
 
@@ -52,10 +49,6 @@ var dbPeopleCounterList =
 
   };
 
-
-
-=======
->>>>>>> origin/master
 var underscore = require("underscore.string");
 var math = require('mathjs');
 
