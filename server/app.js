@@ -18,7 +18,7 @@ var peopleCounterLocationList = ['PCB101-LevelB1CenterPCLabs1', 'PCB102-LevelB1W
 
 var dbPeopleCounterList =
   {
-    "PCB101-LevelB1CenterPCLabs1": {},
+    "PCB101-LevelB1CenterPCLabs1": {"Out": },
     "PCB102-LevelB1WesternPCLabs1": {},
     "PC0005-WattleStreetWest1": {},
     "PC0006-WattleStreetWest2": {},
